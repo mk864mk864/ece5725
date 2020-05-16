@@ -8,7 +8,7 @@ from midiutil import MIDIFile
 
 
 pygame.midi.init()
-player = pygame.midi.Output(0)
+player = pygame.midi.Output(4)
 player.set_instrument(0)
 
 

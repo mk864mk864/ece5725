@@ -14,7 +14,7 @@ import threading
 #os.putenv('SDL_MOUSEDEV', '/dev/input/touchscreen')
 
 pygame.midi.init()
-player = pygame.midi.Output(0)
+player = pygame.midi.Output(4)
 player.set_instrument(0)
 
 red = 200,0,0
@@ -93,6 +93,8 @@ pygame.mixer.init(freq, bitsize, channels, buffer)
 # optional volume 0 to 1.0
 pygame.mixer.music.set_volume(0.8)
 
+notestate = [0]*110
+
 while syson:
 
 	while going:
@@ -133,17 +135,17 @@ while syson:
 				pygame.display.flip()
 
 		if playing:
-			# if not pygame.mixer.music.get_busy():
-			# 	pygame.mixer.music.load("output.mid")
-			# 	pygame.mixer.music.play()
+			if not pygame.mixer.music.get_busy():
+				pygame.mixer.music.load("output.mid")
+				pygame.mixer.music.play()
 			# This is jank command line calling, fork works best
-			subprocess.call(["python", "MIDIplay.py", "output.mid"])
-			playing = False
-			pygame.draw.rect(screen, green, (160, 80, 80, 80))
-			text_surface = my_font.render("PLAY", True, WHITE)
-			rect = text_surface.get_rect(center = (200,120))
-			screen.blit(text_surface, rect)
-			pygame.display.flip()
+			#subprocess.call(["python", "MIDIplay.py", "output.mid"])
+			#playing = False
+			#pygame.draw.rect(screen, green, (160, 80, 80, 80))
+			#text_surface = my_font.render("PLAY", True, WHITE)
+			#rect = text_surface.get_rect(center = (200,120))
+			#screen.blit(text_surface, rect)
+			#pygame.display.flip()
 
 
 		if i.poll():
@@ -151,13 +153,15 @@ while syson:
 			print "full midi_events " + str(midi_events)
 			print "my midi note is " + str(midi_events[0][0][1])
 
-			if str(midi_events[0][0][2]) != "0":
+			if notestate[midi_events[0][0][1]] == 0:
 				player.note_on(midi_events[0][0][1],127)
 				print "on event"
+                                notestate[midi_events[0][0][1]] = 1
 
-			if str(midi_events[0][0][2]) == "0":
+			elif notestate[midi_events[0][0][1]] == 1:
 				player.note_off(midi_events[0][0][1],127)
 				print "off event"
+                                notestate[midi_events[0][0][1]] = 0
 
 
 	notes = {}
@@ -187,18 +191,20 @@ while syson:
 			print "full midi_events " + str(midi_events)
 			print "my midi note is " + str(midi_events[0][0][1])
 
-			if str(midi_events[0][0][2]) != "0":
+			if notestate[midi_events[0][0][1]] == 0:
 				player.note_on(midi_events[0][0][1],127)
 				print "on event"
 				notes[midi_events[0][0][1]] = time.time()-starttime
+                                notestate[midi_events[0][0][1]] = 1
 
-			if str(midi_events[0][0][2]) == "0":
+			if notestate[midi_events[0][0][1]] == 1:
 				player.note_off(midi_events[0][0][1],127)
 				print "off event"
 				startnote = notes.pop(midi_events[0][0][1])
 				duration = time.time() - startnote -starttime
 				print (duration)
 				mf.addNote(0,0,midi_events[0][0][1],startnote, duration, 100)
+                                notestate[midi_events[0][0][1]] = 0
 
 
 del player
