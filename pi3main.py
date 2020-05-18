@@ -3,10 +3,10 @@
 import pygame.midi
 import time
 import os
+import sys
 import pygame
 from midiutil import MIDIFile
-import subprocess
-import threading
+
 
 #os.putenv('SDL_VIDEODRIVER', 'fbcon')
 #os.putenv('SDL_FBDEV', '/dev/fb1')
@@ -101,7 +101,7 @@ while syson:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.quit()
-				quit()
+				sys.exit()
 			if event.type == pygame.MOUSEBUTTONUP:
 				pos = pygame.mouse.get_pos()
 				x,y = pos
@@ -170,7 +170,7 @@ while syson:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.quit()
-				quit()
+				sys.exit()
 			if event.type == pygame.MOUSEBUTTONUP:
 				pos = pygame.mouse.get_pos()
 				x,y = pos
@@ -197,7 +197,7 @@ while syson:
 				notes[midi_events[0][0][1]] = time.time()-starttime
                                 notestate[midi_events[0][0][1]] = 1
 
-			if notestate[midi_events[0][0][1]] == 1:
+		        elif notestate[midi_events[0][0][1]] == 1:
 				player.note_off(midi_events[0][0][1],127)
 				print "off event"
 				startnote = notes.pop(midi_events[0][0][1])
@@ -210,3 +210,4 @@ while syson:
 del player
 pygame.midi.quit()
 pygame.quit()
+sys.exit()

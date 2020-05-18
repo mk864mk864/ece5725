@@ -33,7 +33,7 @@ pygame.init()
 
 pygame.mixer.init(freq, bitsize, channels, buffer)
 # optional volume 0 to 1.0
-pygame.mixer.music.set_volume(0.8)
+pygame.mixer.music.set_volume(1)
 try:
     play_music(music_file)
 except KeyboardInterrupt:
