@@ -2,9 +2,6 @@ import pygame.midi
 import time
 import os
 import pygame
-from midiutil import MIDIFile
-
-
 
 
 pygame.midi.init()

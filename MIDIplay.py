@@ -2,6 +2,7 @@ import pygame
 import pygame.midi
 import os
 
+#audio set up
 os.putenv('SDL_AUDIODRIVER', 'alsa')
 os.putenv('SDL_AUDIODEV', '/dev/audio')
 
@@ -24,7 +25,6 @@ def play_music(music_file):
 # pick a midi or MP3 music file you have in the working folder
 # or give full pathname
 music_file = "output.mid"
-#music_file = "mario.mid"
 freq = 44100    # audio CD quality
 bitsize = -16   # unsigned 16 bit
 channels = 2    # 1 is mono, 2 is stereo
